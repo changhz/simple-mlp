@@ -1,13 +1,12 @@
-#!/usr/bin/env python
+import json
+import argparse
+import timeit
 from NeuralNetwork0 import NeuralNetwork0
 
 import pprint
 pp = pprint.PrettyPrinter(width=40)
 
-import timeit
 start = timeit.default_timer()
-
-import argparse
 
 parser = argparse.ArgumentParser(description='Test a neural network')
 parser.add_argument('--hidden-layers', default=1)
@@ -21,9 +20,7 @@ parser.add_argument('--export', nargs='?')
 
 args = parser.parse_args()
 va = vars(args)
-#print(va)
-
-import json
+# print(va)
 
 train_set = json.load(open(va['train_set'][0]))
 
@@ -45,21 +42,23 @@ for h in range(hidden_layers - 1, -1, -1):
 
 shape.append(output_size)
 print('Shape:', shape, ', Use bias: %s' % use_bias)
-print('init_w: %d, e_max: %.3f, i_max: %d, gamma: %.3f' % (init_w, e_max, i_max, gamma))
+print('init_w: %d, e_max: %.3f, i_max: %d, gamma: %.3f' %
+      (init_w, e_max, i_max, gamma))
 
-#raise
+# raise
 
 for i in range(10):
     net = NeuralNetwork0(shape, init_w, use_bias)
 
     e_trained = net.train(train_set, e_max, i_max, gamma)
 
-    success = e_max >= e_trained
+    success = e_max >= len(e_trained)
     if success:
         break
 
 if success:
-    print('Achieved in %d attempt(s) after %d iterations' % (i + 1, net.i_last_train))
+    print('Achieved in %d attempt(s) after %d iterations' %
+          (i + 1, net.i_last_train))
     if va['export'] != None:
         network = {
             'shape': shape,
@@ -77,10 +76,10 @@ for t in train_set:
     net.calc(t[0])
     print(net.out())
 
-#pp.pprint(net.bias)
-pp.pprint(net.weights[0])
-pp.pprint(net.weights[-1])
+# pp.pprint(net.bias)
+# pp.pprint(net.weights[0])
+# pp.pprint(net.weights[-1])
 
 stop = timeit.default_timer()
-#print('\n')
+# print('\n')
 print('Time elapsed: %.3f secs' % (stop - start))
